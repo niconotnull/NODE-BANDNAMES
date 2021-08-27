@@ -33,7 +33,6 @@ class Server {
         
          // Inicializar middelware
         this.middelwares();
-        console.log('sdsd');
         // Inicializar sockets
         this.configuracionSockets();
 
