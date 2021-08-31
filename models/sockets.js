@@ -1,24 +1,44 @@
+const BandList = require('./band-list');
+
 class Sockets {
+  constructor(io) {
+    this.io = io;
+    this.bandList = new BandList();
 
-    constructor(io) {
-        this.io = io;
-        this.socketEvents();
-    }
+    this.socketEvents();
+  }
 
-    socketEvents() {
-        // On connection
-        this.io.on('connection', (socket) => {
+  socketEvents() {
+    // On connection
+    this.io.on('connection', (socket) => {
+      console.log('Cliente conectado');
 
-            // Escuchar evento: mensaje-to-server
-            socket.on('mensaje-to-server', (data) => {
-                console.log(data);
-                
-                // Este lo manda a todos lo sockets que esten conectados
-                this.io.emit('mensaje-from-server', data)
-            });
-            
-        });
-    }
+      // Emitir  al cliente  conectado, todas las bandas actuales
+      socket.emit('current-bands', this.bandList.getBands());
+
+      // Votar la por la banda
+      socket.on('votar-banda', (id) => {
+        this.bandList.increaseVote(id);
+        // socket.emit('current-bands', this.bandList.getBands());  // emite el cambio solo al socket
+        this.io.emit('current-bands', this.bandList.getBands());
+      });
+
+      socket.on('borrar-banda', (id) => {
+        this.bandList.removeBand(id);
+        this.io.emit('current-bands', this.bandList.getBands());
+      });
+
+      socket.on('cambiar-nombre', ({ id, nombre }) => {
+        this.bandList.changeName(id, nombre);
+        this.io.emit('current-bands', this.bandList.getBands());
+      });
+
+      socket.on('agregar-banda', ({ name }) => {
+        this.bandList.addBand(name);
+        this.io.emit('current-bands', this.bandList.getBands());
+      });
+    });
+  }
 }
- 
+
 module.exports = Sockets;

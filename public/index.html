@@ -11,36 +11,8 @@
 </head>
 
 <body class="container">
-    <h1 class="mt-5">mini chat</h1>
+    <h1 class="mt-5">Accedo denegado</h1>
     <hr>
-
-
-    <form id='miFormulario'>
-        <div class='row'>
-            <div class="col-8">
-
-                <input type="text" id='txtMensaje' placeholder="mensaje" class="form-control" />
-
-            </div>
-            <div class="col-4">
-                <button type="submit" class="btn btn-primary">Enviar</button>
-            </div>
-        </div>
-    </form>
-
-    <div class="row">
-        <div class="col">
-
-            <ul id='misMensajes' class="mt-2">
-
-            </ul>
-
-        </div>
-
-    </div>
-
-
-
 
 
 
@@ -48,35 +20,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.3/socket.io.js" integrity="sha512-PU5S6BA03fRv1Q5fpwXjg5nlRrgdoguZ74urFInkbABMCENyx5oP3hrDzYMMPh3qdLdknIvrGj3yqZ4JuU7Nag==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         const socket = io('http://localhost:8080')
-            // const socket = io('https://react--jnj-socket--server.herokuapp.com/')
 
-
-        socket.on('connect', () => {
-            console.log('Conectado...')
+        socket.on('current-bands', (bands) => {
+            console.log(bands)
         })
 
 
-        // Referencia a los elementos del DOM
-        const formulario = document.querySelector('#miFormulario');
-        const mensajes = document.querySelector('#misMensajes');
-        const txtMensaje = document.querySelector('#txtMensaje');
-
-
-        formulario.addEventListener('submit', (ev) => {
-            ev.preventDefault();
-
-            const nuevoMensaje = txtMensaje.value;
-
-            socket.emit('mensaje-to-server', {
-                texto: nuevoMensaje
-            });
-
-        });
-
-        socket.on('mensaje-from-server', (data) => {
-            console.log(data);
-            mensajes.innerHTML += `<li>${data.texto}</li>`
-        });
 
         // socket.on('mensaje-bienvenida', (data) => {
         //     console.log(data)
